@@ -39,100 +39,127 @@ class _ItemInvoiceScreenState extends State<ItemInvoiceScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double w = MediaQuery.of(context).size.width;
+    double h = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: AppConstants.primaryColor ,
-        title: const Text('Create Invoice'),
-      ),
-      
-      body: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            GestureDetector(
-              onTap: () async {
-                final DateTime? picked = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime(2000),
-                  lastDate: DateTime(2101),
-                );
-                if (picked != null) {
-                  final DateFormat formatter = DateFormat('yyyy-MM-dd');
-                  final String formatted = formatter.format(picked);
-                  setState(() {
-                    _invoiceData['invoiceDate'] = formatted;
-                  });
-                }
-              },
-              child: TextFormField(
-                decoration: const InputDecoration(
-                  labelText: 'Invoice Date',
-                ),
-                initialValue: _invoiceData['invoiceDate'],
-                readOnly: true,
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter an invoice date';
+      body: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              GestureDetector(
+                onTap: () async {
+                  final DateTime? picked = await showDatePicker(
+                    context: context,
+                    initialDate: DateTime.now(),
+                    firstDate: DateTime(2000),
+                    lastDate: DateTime(2101),
+                  );
+                  if (picked != null) {
+                    final DateFormat formatter = DateFormat('yyyy-MM-dd');
+                    final String formatted = formatter.format(picked);
+                    setState(() {
+                      _invoiceData['invoiceDate'] = formatted;
+                    });
                   }
-                  return null;
                 },
-              ),
-            ),
-            TextFormField(
-              decoration: const InputDecoration(
-                labelText: 'Customer Name',
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a bill to address';
-                }
-                return null;
-              },
-              onSaved: (value) {
-                _invoiceData['billTo'] = value;
-              },
-            ),
-            TextFormField(
-              decoration: const InputDecoration(
-                labelText: 'Address',
-              ),
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Please enter a ship to address';
-                }
-                return null;
-              },
-              onSaved: (value) {
-                _invoiceData['shipTo'] = value;
-              },
-            ),
-            Column(
-              children: List.generate(
-                _invoiceData['items'].length,
-                (index) => ItemForm(
-                  index: index,
-                  item: _invoiceData['items'][index],
-                  onRemove: () {
-                    _removeItem(index);
+                child: TextFormField(
+                  decoration: const InputDecoration(
+                    labelText: 'Invoice Date',
+                    labelStyle: TextStyle(fontSize: 12)
+                  ),
+                  initialValue: _invoiceData['invoiceDate'],
+                  readOnly: true,
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter an invoice date';
+                    }
+                    return null;
                   },
                 ),
               ),
-            ),
-            ElevatedButton(
-              onPressed: _addItem,
-              child: const Text('Add Item'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  _formKey.currentState!.save();
-                  print(_invoiceData);
-                }
-              },
-              child: const Text('Generate Invoice'),
-            ),
-          ],
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: 'Customer Name',
+                  labelStyle: TextStyle(fontSize: 12)
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a bill to address';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  _invoiceData['billTo'] = value;
+                },
+              ),
+              TextFormField(
+                decoration: const InputDecoration(
+                  labelText: 'Address',
+                  labelStyle: TextStyle(fontSize: 12)
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a ship to address';
+                  }
+                  return null;
+                },
+                onSaved: (value) {
+                  _invoiceData['shipTo'] = value;
+                },
+              ),
+              Column(
+                children: List.generate(
+                  _invoiceData['items'].length,
+                  (index) => ItemForm(
+                    index: index,
+                    item: _invoiceData['items'][index],
+                    onRemove: () {
+                      _removeItem(index);
+                    },
+                  ),
+                ),
+              ),
+              SizedBox(height: h*0.03,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  SizedBox(
+                    width: w * 0.45,
+                    child: ElevatedButton(
+                      onPressed: _addItem,
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: AppConstants.primaryColor),
+                      child: const Text('Add Item',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          )),
+                    ),
+                  ),
+                  SizedBox(
+                    width: w * 0.45,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          _formKey.currentState!.save();
+                          print(_invoiceData);
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green.shade600),
+                      child: const Text('Generate Invoice',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          )),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -158,9 +185,11 @@ class ItemForm extends StatelessWidget {
         Row(
           children: [
             Expanded(
+              flex: 2,
               child: TextFormField(
                 decoration: const InputDecoration(
-                  labelText: 'Description',
+                  labelText: 'Name',
+                  labelStyle: TextStyle(fontSize: 12)
                 ),
                 initialValue: item['description'],
                 validator: (value) {
@@ -179,6 +208,7 @@ class ItemForm extends StatelessWidget {
               child: TextFormField(
                 decoration: const InputDecoration(
                   labelText: 'Quantity',
+                  labelStyle: TextStyle(fontSize: 12)
                 ),
                 initialValue: item['quantity'].toString(),
                 validator: (value) {
@@ -200,6 +230,7 @@ class ItemForm extends StatelessWidget {
               child: TextFormField(
                 decoration: const InputDecoration(
                   labelText: 'Unit Price',
+                  labelStyle: TextStyle(fontSize: 12)
                 ),
                 initialValue: item['unitPrice'].toString(),
                 validator: (value) {
@@ -216,19 +247,19 @@ class ItemForm extends StatelessWidget {
                 },
               ),
             ),
-          ],
-        ),
-        Row(
-          children: [
-            const Spacer(),
-            ElevatedButton(
-              onPressed: onRemove,
-              child: const Text('Remove'),
-            ),
+            Expanded(
+                child: IconButton(
+                    onPressed: () {
+                      onRemove();
+                    },
+                    icon: const Icon(
+                      Icons.cancel,
+                      color: Colors.red,
+                      size: 20,
+                    )))
           ],
         ),
       ],
     );
   }
 }
- 

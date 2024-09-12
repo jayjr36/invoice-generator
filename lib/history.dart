@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:victech_invoice/constants.dart';
 
 class InvoiceHistory extends StatefulWidget {
   const InvoiceHistory({super.key});
@@ -7,6 +8,7 @@ class InvoiceHistory extends StatefulWidget {
   @override
   State<InvoiceHistory> createState() => _InvoiceHistoryState();
 }
+
 class _InvoiceHistoryState extends State<InvoiceHistory> {
   List<Map<String, dynamic>> serviceInvoices = [
     {
@@ -42,22 +44,36 @@ class _InvoiceHistoryState extends State<InvoiceHistory> {
     },
   ];
 
+  Color? serviceTabColor;
+  Color? productTabColor;
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Invoice History'),
+          iconTheme: const IconThemeData(color: Colors.white),
+          backgroundColor: AppConstants.primaryColor,
+          title: const Text(
+            'Invoices',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
           bottom: const TabBar(
+            labelColor: Colors.amber,
+            unselectedLabelColor: Colors.white,
+            indicatorColor: Colors.amber,
             tabs: [
               Tab(
                 text: 'Service Invoices',
-                icon: Icon(Icons.home_repair_service_rounded),
+                icon: Icon(Icons.home_repair_service_rounded,
+                    color: Colors.white),
+                iconMargin: EdgeInsets.only(bottom: 2),
               ),
               Tab(
                 text: 'Product Invoices',
-                icon: Icon(Icons.shopping_cart_rounded),
+                icon: Icon(Icons.shopping_cart_rounded, color: Colors.white),
+                iconMargin: EdgeInsets.only(bottom: 2),
               ),
             ],
           ),
@@ -69,30 +85,61 @@ class _InvoiceHistoryState extends State<InvoiceHistory> {
               itemBuilder: (context, index) {
                 final invoice = serviceInvoices[index];
                 return ListTile(
-                  leading: const Icon(Icons.receipt),
-                  title: Text(invoice['name']),
-                  subtitle: Text(invoice['date']),
+                  isThreeLine: true,
+                  leading: const Padding(
+                    padding: EdgeInsets.symmetric(vertical: 10.0),
+                    child: Icon(Icons.receipt),
+                  ),
+                  title: Text(
+                    overflow: TextOverflow.ellipsis,
+                    invoice['name'],
+                    style: const TextStyle(
+                        fontSize: 12, fontWeight: FontWeight.bold),
+                  ),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        invoice['customer_name'],
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                      Text(
+                        invoice['date'],
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                    ],
+                  ),
                   trailing: Text(
-                    NumberFormat.currency(decimalDigits: 2).format(invoice['total']),
+                    NumberFormat.currency(locale: 'sw', decimalDigits: 0)
+                        .format(invoice['total']),
                     style: const TextStyle(
                       color: Colors.green,
                     ),
                   ),
                   onTap: () {
-                    // Show a dialog with the items of the invoice
                     showDialog(
                       context: context,
                       builder: (context) {
                         return AlertDialog(
-                          title: Text('Items of ${invoice['name']}'),
-                          content: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Customer Name: ${invoice['customer_name']}'),
-                              Text('Address: ${invoice['address']}'),
-                              Text('Contact: ${invoice['contact']}'),
-                              Text('Price: ${NumberFormat.currency(decimalDigits: 2).format(invoice['price'])}'),
-                            ],
+                          title: Text(
+                            '${invoice['name']}',
+                            style: const TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.bold),
+                          ),
+                          content: SizedBox(
+                            width: double.minPositive,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                    'Customer: ${invoice['customer_name']}'),
+                                Text('Address: ${invoice['address']}'),
+                                Text('Contact: ${invoice['contact']}'),
+                                Text(
+                                    'Price: ${NumberFormat.currency(locale: 'sw', decimalDigits: 0).format(invoice['price'])}'),
+                              ],
+                            ),
                           ),
                           actions: [
                             TextButton(
@@ -115,31 +162,39 @@ class _InvoiceHistoryState extends State<InvoiceHistory> {
                 final invoice = productInvoices[index];
                 return ListTile(
                   leading: const Icon(Icons.receipt),
-                  title: Text(invoice['name']),
-                  subtitle: Text(invoice['date']),
+                  title: Text(invoice['customer_name'], style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),),
+                  subtitle: Text(invoice['date'], style: const TextStyle(fontSize: 12,)),
                   trailing: Text(
-                    NumberFormat.currency(decimalDigits: 2).format(invoice['total']),
+                    NumberFormat.currency(locale: 'sw', decimalDigits: 0)
+                        .format(invoice['total']),
                     style: const TextStyle(
                       color: Colors.green,
                     ),
                   ),
                   onTap: () {
-                    // Show a dialog with the items of the invoice
                     showDialog(
                       context: context,
                       builder: (context) {
                         return AlertDialog(
-                          title: Text('Items of ${invoice['name']}'),
-                          content: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Customer Name: ${invoice['customer_name']}'),
-                              Text('Address: ${invoice['address']}'),
-                              Text('Contact: ${invoice['contact']}'),
-                              Text('Item Name: ${invoice['item_name']}'),
-                              Text('Quantity: ${invoice['quantity']}'),
-                              Text('Price: ${NumberFormat.currency(decimalDigits: 2).format(invoice['price'])}'),
-                            ],
+                          title: Text('${invoice['name']}',
+                            style: const TextStyle(
+                                fontSize: 14, fontWeight: FontWeight.bold),),
+                          content: SizedBox(
+                           width: double.minPositive,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                    'Customer: ${invoice['customer_name']}', style: TextStyle(fontSize: 12),),
+                                Text('Address: ${invoice['address']}'),
+                                Text('Contact: ${invoice['contact']}'),
+                                Text('Product: ${invoice['item_name']}'),
+                                Text('Quantity: ${invoice['quantity']}'),
+                                Text(
+                                    'Price: ${NumberFormat.currency(locale: 'sw', decimalDigits: 2).format(invoice['price'])}'),
+                              ],
+                            ),
                           ),
                           actions: [
                             TextButton(
@@ -162,4 +217,3 @@ class _InvoiceHistoryState extends State<InvoiceHistory> {
     );
   }
 }
-

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:victech_invoice/constants.dart';
 import 'package:victech_invoice/item_invoice.dart';
 import 'package:victech_invoice/service_invoice.dart';
 
@@ -17,15 +18,22 @@ class _InvoiceScreenState extends State<InvoiceScreen> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Create Invoices'),
+          iconTheme: const IconThemeData(color: Colors.white),
+          backgroundColor: AppConstants.primaryColor,
+          title: const Text('Generate Invoices', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),),
           bottom: const TabBar(
+            labelColor: Colors.amber,
+            unselectedLabelColor: Colors.white,
+            indicatorColor: Colors.amber,
             tabs: [
               Tab(
                 text: 'Service Invoice',
-                icon: Icon(Icons.home_repair_service_rounded)),
+                icon: Icon(Icons.home_repair_service_rounded, color: Colors.white),
+              ),
               Tab(
                 text: 'Product Invoice', 
-                icon: Icon(Icons.shopping_cart_rounded)),
+                icon: Icon(Icons.shopping_cart_rounded, color: Colors.white),
+              ),
             ],
           ),
         ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:victech_invoice/constants.dart';
 
 class ServiveInvoiceScreen extends StatefulWidget {
   const ServiveInvoiceScreen({super.key});
@@ -17,10 +18,9 @@ class _ServiveInvoiceScreenState extends State<ServiveInvoiceScreen> {
 
   @override
   Widget build(BuildContext context) {
+    double w = MediaQuery.of(context).size.width;
+    double h = MediaQuery.of(context).size.height;
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Generate Invoice'),
-      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -30,6 +30,7 @@ class _ServiveInvoiceScreenState extends State<ServiveInvoiceScreen> {
               TextFormField(
                 decoration: const InputDecoration(
                   labelText: 'Service Name',
+                   labelStyle: TextStyle(fontSize: 12)
                 ),
                 controller: _serviceNameController,
                 validator: (value) {
@@ -42,6 +43,7 @@ class _ServiveInvoiceScreenState extends State<ServiveInvoiceScreen> {
               TextFormField(
                 decoration: const InputDecoration(
                   labelText: 'Service Price',
+                   labelStyle: TextStyle(fontSize: 12)
                 ),
                 controller: _servicePriceController,
                 validator: (value) {
@@ -51,21 +53,53 @@ class _ServiveInvoiceScreenState extends State<ServiveInvoiceScreen> {
                   return null;
                 },
               ),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    setState(() {
-                      services.add({
-                        'serviceName': _serviceNameController.text,
-                        'servicePrice':
-                            double.parse(_servicePriceController.text),
-                      });
-                      _serviceNameController.clear();
-                      _servicePriceController.clear();
-                    });
-                  }
-                },
-                child: const Text('Add Service'),
+              SizedBox(height: h*0.05,),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  SizedBox(
+                    width: w*0.45,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          setState(() {
+                            services.add({
+                              'serviceName': _serviceNameController.text,
+                              'servicePrice':
+                                  double.parse(_servicePriceController.text),
+                            });
+                            _serviceNameController.clear();
+                            _servicePriceController.clear();
+                          });
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: AppConstants.primaryColor),
+                      child: const Text(
+                        'Add Service',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    width: w*0.45,
+                    child: ElevatedButton(            
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) {
+                          print('services: $services');
+                        }
+                      },
+                       style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green.shade700),
+                      child: const Text(
+                        'Generate Invoice',
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                ],
               ),
               const SizedBox(height: 16),
               services.isEmpty
@@ -81,14 +115,6 @@ class _ServiveInvoiceScreenState extends State<ServiveInvoiceScreen> {
                         );
                       },
                     ),
-              ElevatedButton(
-                onPressed: () {
-                  if (_formKey.currentState!.validate()) {
-                    print('services: $services');
-                  }
-                },
-                child: const Text('Generate Invoice'),
-              ),
             ],
           ),
         ),

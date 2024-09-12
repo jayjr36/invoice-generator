@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:victech_invoice/home.dart';
 import 'package:victech_invoice/splash.dart';
 
 void main() {
